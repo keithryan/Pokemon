@@ -13,15 +13,12 @@ class Boundary {
     static width = 48
     static height = 48
     constructor({position}) {
-        this.position = position
-        this.width = 48
-        this.length = 48
+        this.position = position        
     }
 
-    draw() {
-        
+    draw() {        
         c.fillStyle = 'red'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        c.fillRect(this.position.x, this.position.y, Boundary.width, Boundary.height)
         //console.log(this.position)
     }
 }
@@ -47,25 +44,11 @@ collisionsMap.forEach((row, i) => {
 })
 
 const image = new Image()
-image.src = 'Pokemon Game Map.png'
+image.src = './Zones/Starting Island/Starting Island Map.png'
 
 const playerImage = new Image()
 playerImage.src = './Game Assets/playerDown.png'
 
-class Sprite {
-    constructor({
-        position,
-        velocity,
-        image
-    }) { 
-        this.position = position
-        this.image = image
-    }
-    draw() {
-        c.drawImage(this.image, this.position.x, this.position.y)
-      //  console.log(this.position)
-    }
-}
 
 const background = new Sprite({
     position: {
@@ -75,27 +58,6 @@ const background = new Sprite({
 image: image
 })
 
-const keys = {
-    ArrowUp: {
-        pressed: false
-    },
-    ArrowLeft: {
-        pressed: false
-    },
-    ArrowRight: {
-        pressed: false
-    },
-    ArrowDown: {
-        pressed: false
-    }
-}
-
-const testBoundary = new Boundary({
-position: {
-    x: -600,
-    y: -300
-}
-})
 
     function animate() {
         window.requestAnimationFrame(animate)
@@ -114,48 +76,23 @@ position: {
         playerImage.width / 4,
         playerImage.height
         )
-        if (keys.ArrowUp.pressed && lastKey === 'ArrowUp') background.position.y += 3
-        else if (keys.ArrowDown.pressed && lastKey === 'ArrowDown') background.position.y -= 3
-        else if (keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') background.position.x += 3
-        else if (keys.ArrowRight.pressed && lastKey === 'ArrowRight') background.position.x -= 3
+
+        keysPressed.forEach((keyCode) => {
+            if(keys[keyCode])
+                keys[keyCode].action();
+        })
      }
+
 animate()
 
-let lastKey = ''
-    window.addEventListener('keydown',  (e)  => {
-        switch (e.code) {
-            case 'ArrowUp': // up
-                keys.ArrowUp.pressed = true
-                lastKey = 'ArrowUp'
-            break
-            case 'ArrowLeft': //left
-                keys.ArrowLeft.pressed = true
-                lastKey = 'ArrowLeft'
-            break
-            case 'ArrowRight':  //right
-                keys.ArrowRight.pressed = true
-                lastKey = 'ArrowRight'
-            break
-            case 'ArrowDown':  //down 
-                keys.ArrowDown.pressed = true
-                lastKey = 'ArrowDown'
-            break
-        }
-    })
 
-    window.addEventListener('keyup',  (e)  => {
-        switch (e.code) {
-            case 'ArrowUp': // up
-                keys.ArrowUp.pressed = false
-            break
-            case 'ArrowLeft': //left
-                keys.ArrowLeft.pressed = false
-            break
-            case 'ArrowRight':  //right
-                keys.ArrowRight.pressed = false
-            break
-            case 'ArrowDown':  //down 
-                keys.ArrowDown.pressed = false
-            break
-        }
-    })
+var keysPressed = [];
+
+window.addEventListener('keydown',  (e)  => {
+    keysPressed = keysPressed.filter(x => x != e.code);
+    keysPressed.push(e.code);        
+})
+
+window.addEventListener('keyup',  (e)  => {
+    keysPressed = keysPressed.filter(x => x != e.code);        
+})
